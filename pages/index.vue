@@ -133,7 +133,7 @@ const setFilter = (option: string, isRefresh: boolean = false) => {
   isRefresh && store.dispatch('searchQuery', { query: '' });
 
   router.replace({
-    path: '/news',
+    path: '/',
     query: isRefresh
         ? { filter: filterOption.value, page: 1 }
         : {...route.query, filter: filterOption.value, page: 1 }
@@ -223,7 +223,7 @@ onMounted(() => {
   &__content {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
 
     &.variant-1 {
       flex-direction: column;

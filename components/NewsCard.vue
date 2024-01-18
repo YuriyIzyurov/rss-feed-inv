@@ -2,7 +2,7 @@
   <div :class="['card', cardsView === 'variant-2' ? 'variant-2' : 'variant-1']"  >
     <div class="card__top">
       <div class="card__top--left" v-if="cardsView === 'variant-1'">
-        <img class="card__image" v-if="post.enclosure" :src="post.enclosure[0].$.url" alt="">
+        <img v-if="post.enclosure" :src="post.enclosure[0].$.url" alt="">
       </div>
       <div class="card__top--right">
         <div class="card__title">
@@ -15,8 +15,8 @@
       </div>
     </div>
     <div class="card__bottom">
-      <div>{{post.link[0].includes('mos.ru') ? 'mos.ru' : 'lenta.ru'}}</div>
-      <div class="card__date">{{ convertDate(post.pubDate[0]) }}</div>
+      <span>{{post.link[0].includes('mos.ru') ? 'mos.ru' : 'lenta.ru'}}</span>
+      <span class="card__date">{{ convertDate(post.pubDate[0]) }}</span>
     </div>
   </div>
 </template>
@@ -35,7 +35,7 @@ defineProps<Props>();
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 24px;
+  gap: 20px;
   height: 256px;
   padding: 30px 30px 16px;
   background-color: white;
@@ -43,8 +43,12 @@ defineProps<Props>();
 
   &.variant-1 {
     width: 100%;
-    height: 200px;
+    height: 189px;
     padding-bottom: 4px;
+
+    .card__top {
+      flex-grow: 0;
+    }
   }
   &.variant-2 {
     width: 520px;
@@ -61,6 +65,10 @@ defineProps<Props>();
     flex-grow: 1;
     gap: 30px;
 
+    &--left {
+      min-width: 200px;
+      height: 100px;
+    }
     &--right {
       display: flex;
       flex-direction: column;
@@ -69,11 +77,18 @@ defineProps<Props>();
   &__bottom {
     display: flex;
     justify-content: space-between;
-    color: gray;
+    color: #DCDCDC;
+
+    span:first-child {
+      text-decoration: underline;
+    }
   }
-  &__image {
-    width: 200px;
-    height: 100px;
+  &__description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
   }
 }
 </style>

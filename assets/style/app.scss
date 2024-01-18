@@ -6,35 +6,18 @@
   outline: none;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 body {
-  height: 100%;
   background-color: #FBFBFB;
   color: black;
 }
 html {
-  height: 100%;
-  touch-action: manipulation;
-  -ms-overflow-style: scrollbar;
   box-sizing: border-box;
+  font-family: Arial, sans-serif;
   font-size: 14px;
   line-height: 20px;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: inherit;
-}
-
-ol,
-ul {
-  list-style: none;
-}
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
+  font-weight: 400;
 }
 
 img {
@@ -58,4 +41,7 @@ button {
   border-radius: 0;
   box-shadow: none;
   color: inherit;
+}
+a {
+  color: var(--primary-color);
 }
