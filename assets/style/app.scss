@@ -1,0 +1,56 @@
+* {
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+body {
+  height: 100%;
+  background-color: #FBFBFB;
+  color: black;
+}
+html {
+  height: 100%;
+  touch-action: manipulation;
+  -ms-overflow-style: scrollbar;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+input,
+button {
+  resize: none;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  border-radius: 0;
+  box-shadow: none;
+  color: inherit;
+}
