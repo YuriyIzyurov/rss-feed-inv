@@ -72,6 +72,7 @@ defineProps<Props>();
     &--right {
       display: flex;
       flex-direction: column;
+      gap: 20px;
     }
   }
   &__bottom {
@@ -89,6 +90,46 @@ defineProps<Props>();
     overflow: hidden;
     text-overflow: ellipsis;
     -webkit-line-clamp: 2;
+  }
+}
+@media screen and (max-width: 1100px) {
+  .card {
+    padding: 30px 22px 4px;
+    overflow: hidden;
+
+    &.variant-1 {
+      padding-top: 20px;
+      height: unset;
+
+      .card__top {
+        gap: 20px;
+      }
+    }
+    &__top {
+      flex-direction: column;
+
+      &--left {
+        height: 166px;
+      }
+    }
+    &__bottom {
+      position: relative;
+      background-color: #FCFCFC;
+      z-index: 1;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: -15%;
+        width: 130%;
+        height: 120%;
+        z-index: -1;
+        background-color: #FCFCFC;
+      }
+    }
+    &__description {
+      -webkit-line-clamp: 3;
+    }
   }
 }
 </style>
