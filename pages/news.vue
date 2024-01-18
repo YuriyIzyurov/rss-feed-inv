@@ -45,7 +45,7 @@
         </div>
       </section>
       <section :class="['main__content', cardsView === 'variant-2' ? 'variant-2' : 'variant-1']" >
-
+        <NewsCard v-for="post in currentNews" :post="post" :cardsView="cardsView"/>
       </section>
     </main>
     <footer class="footer">
@@ -89,9 +89,6 @@ store.commit('setAllNews')
 .content {
   max-width: 1060px;
   margin: 0 auto;
-
-  --shadow: 0 2px 4px 0 #0000000D, 0 1px 4px 0 #0000000D;
-  --primary-color: #0029FF;
 }
 .header {
   display: flex;
