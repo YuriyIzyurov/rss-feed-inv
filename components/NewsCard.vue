@@ -16,11 +16,13 @@
     </div>
     <div class="card__bottom">
       <div>{{post.link[0].includes('mos.ru') ? 'mos.ru' : 'lenta.ru'}}</div>
-      <div class="card__date">{{ post.pubDate[0] }}</div>
+      <div class="card__date">{{ convertDate(post.pubDate[0]) }}</div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+
+import {convertDate} from "~/utils/date-converter";
 
 type Props = {
   post: any;
