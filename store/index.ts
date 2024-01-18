@@ -33,7 +33,7 @@ export const store = createStore({
             state.totalPages = Math.ceil(payload.news.length / state.newsPerView)
         },
         setCurrentPage({state}, payload ) {
-
+            state.currentPage = payload.page
         },
         setNewsPerView({state}, payload) {
 

@@ -96,8 +96,20 @@ parseString(data.value as convertableToString, function (err, result) {
 })
 
 const changePage = (page: number) => {
+  router.push({
+    path: '/news',
+    query: {
+      ...route.query,
+      page
+    }
+  }).then(() => {
+    store.dispatch('setCurrentPage', { page })
+  })
+}
+const changeView = (view: ViewType) => {
 
 }
+
 const search = () => {
   console.log('search')
 }
@@ -109,9 +121,6 @@ const setFilter = (option: FilterType) => {
   console.log(option)
 }
 
-const changeView = (view: ViewType) => {
-  console.log(view)
-}
 
 
 store.commit('setAllNews')
