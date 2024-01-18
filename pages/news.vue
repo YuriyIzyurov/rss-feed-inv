@@ -118,18 +118,30 @@ const changeView = (view: ViewType) => {
     store.dispatch('setCurrentPage', { page: 1 })
   })
 }
-
 const search = () => {
-  console.log('search')
+  store.dispatch('setCurrentPage', { page: 1 })
+  store.dispatch('searchQuery', { query: query.value })
+
+  router.replace({
+    path: '/news',
+    query: {q: searchQuery.value, filter: filterOption.value}
+  })
+}
+const setFilter = (option: string, isRefresh: boolean = false) => {
+  store.dispatch('setCurrentPage', { page: 1 });
+  store.dispatch('filterBySource', { filter: option });
+  isRefresh && store.dispatch('searchQuery', { query: '' });
+
+  router.replace({
+    path: '/news',
+    query: isRefresh
+        ? { filter: filterOption.value, page: 1 }
+        : {...route.query, filter: filterOption.value, page: 1 }
+  })
 }
 const refreshNews = () => {
   console.log('refresh')
 }
-
-const setFilter = (option: FilterType) => {
-  console.log(option)
-}
-
 
 
 store.commit('setAllNews')
