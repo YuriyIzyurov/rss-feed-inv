@@ -55,6 +55,7 @@
 </template>
 <script setup lang="ts">
 import { useStore } from 'vuex'
+import { parseString, convertableToString } from 'xml2js';
 import type {FilterType, ViewType} from "~/types";
 const store = useStore()
 
@@ -66,6 +67,33 @@ const filterOption = computed(() => store.state.filterOption)
 
 const query = ref<string>('')
 const cardsView = ref<string | null>(null)
+
+const router = useRouter();
+const route = useRoute();
+
+if(route.query) {
+  if(route.query.page) {
+    store.dispatch('setCurrentPage', { page: +route.query.page })
+  }
+  if(route.query.q) {
+    store.dispatch('searchQuery', { query: route.query.q });
+  }
+  if(route.query.filter) {
+    store.dispatch('filterBySource', { filter: route.query.filter });
+  }
+  router.replace({
+    path: '/news',
+    query: searchQuery.value
+        ? {q: searchQuery.value, filter: filterOption.value, page: currentPage.value}
+        : {filter: filterOption.value, page: currentPage.value}
+  })
+}
+
+const { data, refresh } = await useFetch('https://www.mos.ru/rss')
+
+parseString(data.value as convertableToString, function (err, result) {
+  store.dispatch('setNews', {news: result.rss.channel[0].item, source: 'mos'})
+})
 
 const search = () => {
   console.log('search')

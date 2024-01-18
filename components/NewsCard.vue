@@ -2,20 +2,21 @@
   <div :class="['card', cardsView === 'variant-2' ? 'variant-2' : 'variant-1']"  >
     <div class="card__top">
       <div class="card__top--left" v-if="cardsView === 'variant-1'">
-        <img class="card__image"  src="https://png.pngtree.com/thumb_back/fw800/background/20230527/pngtree-phoenix-bird-in-flames-wallpapers-wallpapershd-image_2697352.jpg" alt="">
+        <img class="card__image" v-if="post.enclosure" :src="post.enclosure[0].$.url" alt="">
       </div>
       <div class="card__top--right">
         <div class="card__title">
-          {{ 'Lorem Ipsum passage, and going through the cites of the word' }}
+          {{ post.title[0] }}
         </div>
         <p class="card__description" v-if="post.description">
-          {{ 'Lorem Ipsum passage, and going through the cites of the word' }}
+          {{ post.description[0] }}
         </p>
-        <a v-if="cardsView === 'variant-2'" href="#">Подробнее</a>
+        <a v-if="cardsView === 'variant-2'" :href="post.link[0]">Подробнее</a>
       </div>
     </div>
     <div class="card__bottom">
-      <div class="card__date">{{ '11.11.2022' }}</div>
+      <div>{{post.link[0].includes('mos.ru') ? 'mos.ru' : 'lenta.ru'}}</div>
+      <div class="card__date">{{ post.pubDate[0] }}</div>
     </div>
   </div>
 </template>
@@ -69,8 +70,8 @@ defineProps<Props>();
     color: gray;
   }
   &__image {
-    width: 166px;
-    height: 127px;
+    width: 200px;
+    height: 100px;
   }
 }
 </style>

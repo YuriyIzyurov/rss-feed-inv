@@ -24,6 +24,25 @@ export const store = createStore({
         },
     },
     actions: {
+        setNews({state}, payload) {
+            if(payload.source === 'mos') {
+                state.mos_news = payload.news
+            } else {
+                state.lenta_news = payload.news
+            }
+            state.totalPages = Math.ceil(payload.news.length / state.newsPerView)
+        },
+        setCurrentPage({state}, payload ) {
 
+        },
+        setNewsPerView({state}, payload) {
+
+        },
+        searchQuery({state}, payload) {
+
+        },
+        filterBySource({state}, payload) {
+
+        }
     }
 });
