@@ -145,8 +145,14 @@ const refreshNews = async () => {
   query.value = ''
 }
 
-
 store.commit('setAllNews')
+
+onMounted(() => {
+  if(!localStorage.getItem('cardsView')) {
+    localStorage.setItem('cardsView', 'variant-2')
+  }
+  cardsView.value = localStorage.getItem('cardsView')
+})
 </script>
 <style lang="scss" scoped>
 .content {
