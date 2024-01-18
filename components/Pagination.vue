@@ -2,6 +2,7 @@
   <button
       v-for="pageNum in totalPages"
       :class="['page', currentPage === pageNum && 'is-active']"
+      :key="pageNum"
       @click="$emit('onPaginate', pageNum)"
   >
     {{ pageNum }}

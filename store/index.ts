@@ -11,6 +11,7 @@ export const store = createStore({
             newsPerView: 4,
             filterOption: 'all',
             searchQuery: '',
+            nothingFound: false
         };
     },
     getters: {
@@ -42,6 +43,7 @@ export const store = createStore({
 
             const resultNews = filteredNews ? filteredNews : state.allNews
             state.totalPages = Math.ceil(resultNews.length / state.newsPerView)
+            state.nothingFound = !resultNews.length;
 
             return resultNews.slice(startIndex, endIndex);
         }

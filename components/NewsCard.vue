@@ -15,13 +15,16 @@
       </div>
     </div>
     <div class="card__bottom">
-      <span>{{post.link[0].includes('mos.ru') ? 'mos.ru' : 'lenta.ru'}}</span>
+      <a :href="`https://${post.link[0].includes('mos.ru') ? 'mos.ru' : 'lenta.ru'}`"
+         target="_blank"
+      >
+        {{post.link[0].includes('mos.ru') ? 'mos.ru' : 'lenta.ru'}}
+      </a>
       <span class="card__date">{{ convertDate(post.pubDate[0]) }}</span>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-
 import {convertDate} from "~/utils/date-converter";
 
 type Props = {
@@ -72,7 +75,11 @@ defineProps<Props>();
     &--right {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
+
+      a {
+        color: var(--primary-color);
+      }
     }
   }
   &__bottom {
@@ -80,6 +87,9 @@ defineProps<Props>();
     justify-content: space-between;
     color: #DCDCDC;
 
+    a {
+      color: #DCDCDC;
+    }
     span:first-child {
       text-decoration: underline;
     }

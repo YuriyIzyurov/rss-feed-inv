@@ -28,26 +28,17 @@
           <button :class="[filterOption === 'mos' && 'is-active']" @click="setFilter('mos')">Mos.ru</button>
         </div>
         <div class="main__view-changer">
-          <div
-              :class="['view-changer view-changer__variant-1', cardsView === 'variant-1' && 'is-active']"
-              @click="changeView('variant-1')"
-          >
-            <span></span>
-            <span></span>
-          </div>
-          <div
-              :class="['view-changer view-changer__variant-2', cardsView === 'variant-2' && 'is-active']"
-              @click="changeView('variant-2')"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+          <ViewChanger :cardsView="cardsView" @change-view="changeView"/>
         </div>
       </section>
       <section :class="['main__content', cardsView === 'variant-2' ? 'variant-2' : 'variant-1']" >
-        <NewsCard v-for="post in currentNews" :post="post" :cardsView="cardsView"/>
+        <NewsCard
+            v-for="(post, index) in currentNews"
+            :post="post"
+            :cardsView="cardsView"
+            :key="index"
+        />
+        <span v-if="nothingFound" style="font-size: 20px">Ничего не найдено!</span>
       </section>
     </main>
     <footer class="footer">
@@ -59,6 +50,7 @@
 import { useStore } from 'vuex'
 import { parseString, convertableToString } from 'xml2js';
 import type {FilterType, ViewType} from "~/types";
+import ViewChanger from "~/components/ViewChanger.vue";
 const store = useStore()
 
 const currentNews = computed(() => store.getters.getCurrentNews)
@@ -66,6 +58,7 @@ const totalPages = computed(() => store.state.totalPages)
 const currentPage = computed(() => store.state.currentPage)
 const searchQuery = computed(() => store.state.searchQuery)
 const filterOption = computed(() => store.state.filterOption)
+const nothingFound = computed(() => store.state.nothingFound)
 
 const query = ref<string>('')
 const cardsView = ref<string | null>(null)
@@ -129,7 +122,7 @@ const search = () => {
     query: {q: searchQuery.value, filter: filterOption.value}
   })
 }
-const setFilter = (option: string, isRefresh: boolean = false) => {
+const setFilter = (option: FilterType, isRefresh: boolean = false) => {
   store.dispatch('setCurrentPage', { page: 1 });
   store.dispatch('filterBySource', { filter: option });
   isRefresh && store.dispatch('searchQuery', { query: '' });
@@ -240,36 +233,6 @@ onMounted(() => {
     }
   }
 }
-
-.view-changer {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-
-  &__variant-1 {
-    span {
-      width: 100%;
-      height: calc(50% - 1px);
-    }
-  }
-  &__variant-2 {
-    flex-wrap: wrap;
-    span {
-      width: calc(50% - 1px);
-      height: calc(50% - 1px);
-    }
-  }
-  &.is-active span {
-    background-color: var(--primary-color);
-  }
-  span {
-    display: block;
-    background-color: #C4C4C4;
-  }
-}
 .footer {
   display: flex;
   justify-content: center;
@@ -282,7 +245,8 @@ onMounted(() => {
 
 @media screen and (max-width: 1100px) {
   .content {
-    max-width: 380px;
+    max-width: 400px;
+    padding: 0 10px;
   }
   .header {
     flex-direction: column;
