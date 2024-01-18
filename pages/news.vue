@@ -49,7 +49,7 @@
       </section>
     </main>
     <footer class="footer">
-
+      <Pagination :current-page="currentPage" :total-pages="totalPages" @on-paginate="changePage"/>
     </footer>
   </div>
 </template>
@@ -95,6 +95,9 @@ parseString(data.value as convertableToString, function (err, result) {
   store.dispatch('setNews', {news: result.rss.channel[0].item, source: 'mos'})
 })
 
+const changePage = (page: number) => {
+
+}
 const search = () => {
   console.log('search')
 }
@@ -222,5 +225,8 @@ store.commit('setAllNews')
   justify-content: center;
   gap: 20px;
   padding-top: 50px;
+  padding-bottom: 100px;
+  font-size: 18px;
+  font-weight: 700;
 }
 </style>
