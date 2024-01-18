@@ -36,7 +36,8 @@ export const store = createStore({
             state.currentPage = payload.page
         },
         setNewsPerView({state}, payload) {
-
+            state.newsPerView = payload.amount
+            state.totalPages = Math.ceil(state.allNews.length / state.newsPerView)
         },
         searchQuery({state}, payload) {
 

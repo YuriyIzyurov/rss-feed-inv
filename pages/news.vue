@@ -107,7 +107,16 @@ const changePage = (page: number) => {
   })
 }
 const changeView = (view: ViewType) => {
+  localStorage.setItem('cardsView', view)
+  cardsView.value = localStorage.getItem('cardsView')
+  const newsShown = cardsView.value === 'variant-1' ? 2 : 4
+  store.dispatch('setNewsPerView', { amount: newsShown })
 
+  router.replace({
+    path: '/news', query: { ...route.query, page: 1 }
+  }).then(() => {
+    store.dispatch('setCurrentPage', { page: 1 })
+  })
 }
 
 const search = () => {
