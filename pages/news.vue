@@ -139,8 +139,10 @@ const setFilter = (option: string, isRefresh: boolean = false) => {
         : {...route.query, filter: filterOption.value, page: 1 }
   })
 }
-const refreshNews = () => {
-  console.log('refresh')
+const refreshNews = async () => {
+  await refresh()
+  setFilter('all', true)
+  query.value = ''
 }
 
 
