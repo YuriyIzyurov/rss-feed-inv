@@ -10,15 +10,13 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@types/xml2js": "^0.4.14",
     "nuxt": "^3.9.3",
     "sass": "^1.70.0",
     "vue": "^3.4.14",
     "vue-router": "^4.2.5"
   },
   "dependencies": {
-    "events": "^3.3.0",
-    "vuex": "^4.0.2",
-    "xml2js": "^0.6.2"
+    "rss-parser": "^3.13.0",
+    "vuex": "^4.0.2"
   }
 }

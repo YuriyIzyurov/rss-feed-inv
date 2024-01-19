@@ -31,40 +31,47 @@
           <ViewChanger :cardsView="cardsView" @change-view="changeView"/>
         </div>
       </section>
-      <section :class="['main__content', cardsView === 'variant-2' ? 'variant-2' : 'variant-1']" >
+      <section v-if="!isLoading" :class="['main__content', cardsView === 'variant-2' ? 'variant-2' : 'variant-1']">
         <NewsCard
-            v-for="(post, index) in currentNews"
-            :post="post"
+            v-for="newsItem in currentNews"
+            :newsItem="newsItem"
             :cardsView="cardsView"
-            :key="index"
+            :key="newsItem.link"
         />
         <span v-if="nothingFound" style="font-size: 20px">Ничего не найдено!</span>
       </section>
+      <span v-else style="font-size: 24px">Загрузка...</span>
     </main>
     <footer class="footer">
-      <Pagination :current-page="currentPage" :total-pages="totalPages" @on-paginate="changePage"/>
+      <Pagination
+          v-if="!isLoading"
+          :currentPage="currentPage"
+          :visiblePages="visiblePages"
+          @on-paginate="changePage"
+      />
     </footer>
   </div>
 </template>
 <script setup lang="ts">
 import { useStore } from 'vuex'
-import { parseString, convertableToString } from 'xml2js';
 import type {FilterType, ViewType} from "~/types";
-import ViewChanger from "~/components/ViewChanger.vue";
 const store = useStore()
 
-const currentNews = computed(() => store.getters.getCurrentNews)
-const totalPages = computed(() => store.state.totalPages)
+const currentNews = computed(() => store.state.currentNews)
 const currentPage = computed(() => store.state.currentPage)
+const visiblePages = computed(() => store.state.visiblePages)
 const searchQuery = computed(() => store.state.searchQuery)
 const filterOption = computed(() => store.state.filterOption)
 const nothingFound = computed(() => store.state.nothingFound)
+const isLoading = computed(() => store.state.isLoading)
 
 const query = ref<string>('')
-const cardsView = ref<string | null>(null)
+const cardsView = ref<ViewType>('variant-2')
 
 const router = useRouter();
 const route = useRoute();
+
+store.dispatch('fetchData')
 
 if(route.query) {
   if(route.query.page) {
@@ -72,6 +79,7 @@ if(route.query) {
   }
   if(route.query.q) {
     store.dispatch('searchQuery', { query: route.query.q });
+    query.value = route.query.q
   }
   if(route.query.filter) {
     store.dispatch('filterBySource', { filter: route.query.filter });
@@ -83,12 +91,6 @@ if(route.query) {
         : {filter: filterOption.value, page: currentPage.value}
   })
 }
-
-const { data, refresh } = await useFetch('https://www.mos.ru/rss')
-
-parseString(data.value as convertableToString, function (err, result) {
-  store.dispatch('setNews', {news: result.rss.channel[0].item, source: 'mos'})
-})
 
 const changePage = (page: number) => {
   router.push({
@@ -114,8 +116,8 @@ const changeView = (view: ViewType) => {
   })
 }
 const search = () => {
-  store.dispatch('setCurrentPage', { page: 1 })
   store.dispatch('searchQuery', { query: query.value })
+  store.dispatch('setCurrentPage', { page: 1 })
 
   router.replace({
     path: '/',
@@ -123,9 +125,9 @@ const search = () => {
   })
 }
 const setFilter = (option: FilterType, isRefresh: boolean = false) => {
-  store.dispatch('setCurrentPage', { page: 1 });
   store.dispatch('filterBySource', { filter: option });
   isRefresh && store.dispatch('searchQuery', { query: '' });
+  store.dispatch('setCurrentPage', { page: 1 });
 
   router.replace({
     path: '/',
@@ -134,19 +136,19 @@ const setFilter = (option: FilterType, isRefresh: boolean = false) => {
         : {...route.query, filter: filterOption.value, page: 1 }
   })
 }
-const refreshNews = async () => {
-  await refresh()
+const refreshNews = () => {
+  store.dispatch('fetchData')
   setFilter('all', true)
   query.value = ''
 }
 
-store.commit('setAllNews')
 
 onMounted(() => {
   if(!localStorage.getItem('cardsView')) {
     localStorage.setItem('cardsView', 'variant-2')
   }
   cardsView.value = localStorage.getItem('cardsView')
+  store.dispatch('setLoadingStatus', { isLoading: false })
 })
 </script>
 <style lang="scss" scoped>

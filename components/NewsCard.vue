@@ -2,33 +2,34 @@
   <div :class="['card', cardsView === 'variant-2' ? 'variant-2' : 'variant-1']"  >
     <div class="card__top">
       <div class="card__top--left" v-if="cardsView === 'variant-1'">
-        <img v-if="post.enclosure" :src="post.enclosure[0].$.url" alt="">
+        <img v-if="newsItem.image" :src="newsItem.image" loading="lazy" alt="">
       </div>
       <div class="card__top--right">
         <div class="card__title">
-          {{ post.title[0] }}
+          {{ newsItem.title }}
         </div>
-        <p class="card__description" v-if="post.description">
-          {{ post.description[0] }}
+        <p class="card__description" v-if="newsItem.content">
+          {{ newsItem.content }}
         </p>
-        <a v-if="cardsView === 'variant-2'" :href="post.link[0]">Подробнее</a>
+        <a v-if="cardsView === 'variant-2'" :href="newsItem.link">Подробнее</a>
       </div>
     </div>
     <div class="card__bottom">
-      <a :href="`https://${post.link[0].includes('mos.ru') ? 'mos.ru' : 'lenta.ru'}`"
+      <a :href="`https://${newsItem.source}`"
          target="_blank"
       >
-        {{post.link[0].includes('mos.ru') ? 'mos.ru' : 'lenta.ru'}}
+        {{ newsItem.source }}
       </a>
-      <span class="card__date">{{ convertDate(post.pubDate[0]) }}</span>
+      <span class="card__date">{{ convertDate(newsItem.pupDate) }}</span>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import type {NewsItemType} from "~/types";
 import {convertDate} from "~/utils/date-converter";
 
 type Props = {
-  post: any;
+  newsItem: NewsItemType;
   cardsView: string | null;
 };
 defineProps<Props>();
