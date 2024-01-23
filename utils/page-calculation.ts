@@ -1,7 +1,9 @@
 import type {PageInfoType} from "~/types";
 
-export function pageCalculator({ currentPage, visiblePagesAmount, totalPages }: PageInfoType) {
+export function pageCalculator({ currentPage, totalPages }: PageInfoType) {
     const pageArr = []
+    const visiblePagesAmount = 5
+
     let startPage = Math.max(currentPage - Math.floor(visiblePagesAmount / 2), 2)
     const endPage = Math.min(startPage + visiblePagesAmount - 2, totalPages - 1)
 

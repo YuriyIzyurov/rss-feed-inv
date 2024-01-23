@@ -44,7 +44,7 @@
     </main>
     <footer class="footer">
       <Pagination
-          v-if="!isLoading"
+          v-if="!isLoading && currentNews.length"
           :currentPage="currentPage"
           :visiblePages="visiblePages"
           @on-paginate="changePage"
@@ -59,6 +59,7 @@ const store = useStore()
 
 const currentNews = computed(() => store.state.currentNews)
 const currentPage = computed(() => store.state.currentPage)
+const totalPages = computed(() => store.state.totalPages)
 const visiblePages = computed(() => store.state.visiblePages)
 const searchQuery = computed(() => store.state.searchQuery)
 const filterOption = computed(() => store.state.filterOption)
@@ -76,6 +77,7 @@ store.dispatch('fetchData')
 if(route.query) {
   if(route.query.page) {
     store.dispatch('setCurrentPage', { page: +route.query.page })
+    store.commit('setVisiblePages', { currentPage: +route.query.page, totalPages: totalPages.value })
   }
   if(route.query.q) {
     store.dispatch('searchQuery', { query: route.query.q });
@@ -101,23 +103,29 @@ const changePage = (page: number) => {
     }
   }).then(() => {
     store.dispatch('setCurrentPage', { page })
+    store.commit('setCurrentNews')
+    store.commit('setVisiblePages', { currentPage: page, totalPages: totalPages.value })
   })
 }
 const changeView = (view: ViewType) => {
   localStorage.setItem('cardsView', view)
   cardsView.value = localStorage.getItem('cardsView')
-  const newsShown = cardsView.value === 'variant-1' ? 2 : 4
+  const newsShown = cardsView.value === 'variant-1' ? 3 : 4
   store.dispatch('setNewsPerView', { amount: newsShown })
 
   router.replace({
     path: '/', query: { ...route.query, page: 1 }
   }).then(() => {
     store.dispatch('setCurrentPage', { page: 1 })
+    store.commit('setCurrentNews')
+    store.commit('setVisiblePages', { currentPage: 1, totalPages: totalPages.value })
   })
 }
 const search = () => {
   store.dispatch('searchQuery', { query: query.value })
   store.dispatch('setCurrentPage', { page: 1 })
+  store.commit('setCurrentNews')
+  store.commit('setVisiblePages', { currentPage: 1, totalPages: totalPages.value })
 
   router.replace({
     path: '/',
@@ -128,6 +136,8 @@ const setFilter = (option: FilterType, isRefresh: boolean = false) => {
   store.dispatch('filterBySource', { filter: option });
   isRefresh && store.dispatch('searchQuery', { query: '' });
   store.dispatch('setCurrentPage', { page: 1 });
+  store.commit('setCurrentNews')
+  store.commit('setVisiblePages', { currentPage: 1, totalPages: totalPages.value })
 
   router.replace({
     path: '/',
@@ -147,7 +157,12 @@ onMounted(() => {
   if(!localStorage.getItem('cardsView')) {
     localStorage.setItem('cardsView', 'variant-2')
   }
-  cardsView.value = localStorage.getItem('cardsView')
+  const view = localStorage.getItem('cardsView')
+  cardsView.value = view
+  if(view === 'variant-1') {
+    store.dispatch('setNewsPerView', { amount: 3 })
+  }
+
   store.dispatch('setLoadingStatus', { isLoading: false })
 })
 </script>

@@ -12,7 +12,6 @@ export const store = createStore({
             currentPage: 1,
             newsPerView: 4,
             visiblePages: [],
-            visiblePagesAmount: 5,
             filterOption: 'all',
             searchQuery: '',
             nothingFound: false,
@@ -25,6 +24,7 @@ export const store = createStore({
             state.totalPages = Math.ceil(payload.length / state.newsPerView)
        },
         setCurrentNews (state) {
+
             const filteredNews = state.allNews
                 .filter((item: NewsItemType) => {
                     let isQueryParamsMatch
@@ -49,6 +49,7 @@ export const store = createStore({
 
             const resultNews = filteredNews ? filteredNews : state.allNews;
             state.totalPages = !resultNews.length ? 0 : Math.ceil(resultNews.length / state.newsPerView);
+
             state.nothingFound = !resultNews.length;
 
             let startIndex = (state.currentPage - 1) * state.newsPerView;
@@ -91,11 +92,7 @@ export const store = createStore({
                 if(resultNewsArray) {
                     commit('setAllNews', resultNewsArray);
                     commit('setCurrentNews');
-                    commit('setVisiblePages', {
-                        currentPage: state.currentPage,
-                        visiblePagesAmount: state.visiblePagesAmount,
-                        totalPages: state.totalPages
-                    });
+                    commit('setVisiblePages', { currentPage: state.currentPage, totalPages: state.totalPages });
                 }
 
             } catch (error) {
@@ -105,13 +102,6 @@ export const store = createStore({
         setCurrentPage({state, commit}, payload ) {
             if(!payload.page) return
             state.currentPage = payload.page
-
-            commit('setCurrentNews');
-            commit('setVisiblePages', {
-                currentPage: state.currentPage,
-                visiblePagesAmount: state.visiblePagesAmount,
-                totalPages: state.totalPages
-            })
         },
         setNewsPerView({state}, payload) {
             state.newsPerView = payload.amount

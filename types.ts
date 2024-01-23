@@ -11,6 +11,5 @@ export type NewsItemType = {
 }
 export type PageInfoType = {
     currentPage: number,
-    visiblePagesAmount: number,
     totalPages: number
 }
