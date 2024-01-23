@@ -30,9 +30,10 @@ export const store = createStore({
                     let isQueryParamsMatch
 
                     if(state.searchQuery) {
+                        const searchQueryLower = state.searchQuery.toLowerCase();
                         isQueryParamsMatch
-                            = item.content && item.content.includes(state.searchQuery)
-                            || item.title.includes(state.searchQuery)
+                            = item.content && item.content.toLowerCase().includes(searchQueryLower)
+                            || item.title.toLowerCase().includes(searchQueryLower)
                     }
                     if(state.filterOption === 'mos') {
                         return state.searchQuery
