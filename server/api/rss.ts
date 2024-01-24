@@ -10,7 +10,7 @@ export default defineEventHandler(
             return {
                 status: 200,
                 data: {
-                    ...(feed as any),
+                    ...feed,
                     rss: body.url,
                 },
                 error: null,

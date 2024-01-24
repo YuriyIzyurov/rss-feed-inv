@@ -1,7 +1,7 @@
 <template>
-  <div :class="['card', cardsView === 'variant-2' ? 'variant-2' : 'variant-1']"  >
+  <div :class="['card', cardsView === CardView.VARIANT_2 ? CardView.VARIANT_2 : CardView.VARIANT_1]"  >
     <div class="card__top">
-      <div class="card__top--left" v-if="cardsView === 'variant-1'">
+      <div class="card__top--left" v-if="cardsView === CardView.VARIANT_1">
         <img v-if="newsItem.image" :src="newsItem.image" loading="lazy" alt="">
       </div>
       <div class="card__top--right">
@@ -20,13 +20,14 @@
       >
         {{ newsItem.source }}
       </a>
-      <span class="card__date">{{ convertDate(newsItem.pupDate) }}</span>
+      <span class="card__date">{{ convertDate(newsItem.pubDate) }}</span>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import type {NewsItemType} from "~/types";
 import {convertDate} from "~/utils/date-converter";
+import {CardView} from "~/types";
 
 type Props = {
   newsItem: NewsItemType;

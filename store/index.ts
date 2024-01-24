@@ -1,26 +1,42 @@
-import {createStore} from "vuex";
-import {formData} from "~/utils/rss-data-extract";
+import {createStore, Store} from "vuex";
+import {type InjectionKey} from 'vue'
 import {pageCalculator} from "~/utils/page-calculation";
 import type {NewsItemType} from "~/types";
+import {Filter, NewsPerView, SourceUrl} from "~/types";
+
+export interface State {
+    allNews: NewsItemType[],
+    currentNews: NewsItemType[],
+    totalPages: number,
+    currentPage: number,
+    newsPerView: NewsPerView,
+    visiblePages: string[],
+    filterOption: Filter,
+    searchQuery: string,
+    nothingFound: boolean,
+    isLoading: boolean
+}
+export const key: InjectionKey<Store<State>> = Symbol()
 
 export const store = createStore({
     state() {
         return {
-            allNews: [],
-            currentNews: [],
+            allNews: [] as NewsItemType[],
+            currentNews: [] as NewsItemType[],
             totalPages: 0,
             currentPage: 1,
-            newsPerView: 4,
-            visiblePages: [],
-            filterOption: 'all',
+            newsPerView: NewsPerView.VARIANT_2,
+            visiblePages: [] as (string | number)[],
+            filterOption: Filter.ALL,
             searchQuery: '',
             nothingFound: false,
             isLoading: true
         };
     },
     mutations: {
-        setAllNews(state, payload) {
-            state.allNews = payload.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+        setAllNews(state, payload: NewsItemType[]) {
+            state.allNews = payload.sort((a, b) =>
+                new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
             state.totalPages = Math.ceil(payload.length / state.newsPerView)
        },
         setCurrentNews (state) {
@@ -35,15 +51,15 @@ export const store = createStore({
                             = item.content && item.content.toLowerCase().includes(searchQueryLower)
                             || item.title.toLowerCase().includes(searchQueryLower)
                     }
-                    if(state.filterOption === 'mos') {
+                    if(state.filterOption === Filter.MOS) {
                         return state.searchQuery
-                            ? isQueryParamsMatch && item.source === 'mos.ru'
-                            : item.source === 'mos.ru'
+                            ? isQueryParamsMatch && item.source === SourceUrl.MOS
+                            : item.source === SourceUrl.MOS
                     }
-                    else if(state.filterOption === 'lenta') {
+                    else if(state.filterOption === Filter.LENTA) {
                         return state.searchQuery
-                            ? isQueryParamsMatch && item.source === 'lenta.ru'
-                            : item.source === 'lenta.ru'
+                            ? isQueryParamsMatch && item.source === SourceUrl.LENTA
+                            : item.source === SourceUrl.LENTA
                     } else
                         return state.searchQuery ? isQueryParamsMatch : true
                 })
@@ -62,43 +78,10 @@ export const store = createStore({
         }
     },
     actions: {
-        async fetchData({state, commit}) {
-            try {
-                let resultNewsArray
-
-                const data1 = await $fetch('/api/rss', {
-                    method: 'POST',
-                    body: {
-                        url: 'https://lenta.ru/rss/news'
-                    }
-                });
-                if(data1.status === 200) {
-                    resultNewsArray = formData(data1.data.items)
-                }
-
-                const data2 = await $fetch('/api/rss', {
-                    method: 'POST',
-                    body: {
-                        url: 'https://www.mos.ru/rss'
-                    }
-                });
-                if(data2.status === 200) {
-                    if(!resultNewsArray) {
-                        resultNewsArray = formData(data2.data.items)
-                    } else {
-                        resultNewsArray.push(...formData(data2.data.items))
-                    }
-                }
-
-                if(resultNewsArray) {
-                    commit('setAllNews', resultNewsArray);
-                    commit('setCurrentNews');
-                    commit('setVisiblePages', { currentPage: state.currentPage, totalPages: state.totalPages });
-                }
-
-            } catch (error) {
-                console.log('Ошибка при получении данных:', error);
-            }
+        setData({state, commit}, payload: {data: NewsItemType[]}) {
+            commit('setAllNews', payload.data);
+            commit('setCurrentNews');
+            commit('setVisiblePages', { currentPage: state.currentPage, totalPages: state.totalPages });
         },
         setCurrentPage({state, commit}, payload ) {
             if(!payload.page) return

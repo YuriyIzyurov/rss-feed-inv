@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 type Props = {
   currentPage: number;
-  visiblePages: string[];
+  visiblePages: (string | number)[];
 };
 defineProps<Props>();
 defineEmits(['onPaginate']);
